@@ -1,0 +1,4 @@
+# Netlify config for the brysonsystems.ca static site.
+# Plain HTML, no build step — Netlify just publishes the repo root.
+[build]
+  publish = "."

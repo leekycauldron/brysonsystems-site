@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>bio.md: an AI mirror of who you are on the inside | Bryson Systems</title>
+    <meta name="description" content="I built bio.md, an agent that reads your exported history and maintains an evidence-based profile of you. Here's why, and what I found in mine.">
+    <style>
+:root {
+  --ink: #17211b;
+  --muted: #5f6b63;
+  --line: #d9e1db;
+  --paper: #f7f4ee;
+  --white: #fffdfa;
+  --green: #245c42;
+  --mint: #d8efe2;
+  --gold: #c88b28;
+  --shadow: 0 24px 70px rgba(23, 33, 27, 0.13);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+a { color: inherit; text-decoration: none; }
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 18px clamp(18px, 4vw, 54px);
+  border-bottom: 1px solid rgba(23, 33, 27, 0.08);
+  background: rgba(247, 244, 238, 0.88);
+  backdrop-filter: blur(18px);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 750; }
+.brand-mark {
+  display: grid; width: 34px; height: 34px; place-items: center;
+  border-radius: 7px; color: var(--white); background: var(--green); font-size: 0.78rem;
+}
+.nav { display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); color: var(--muted); font-size: 0.94rem; }
+.nav a:hover, .nav a.active { color: var(--ink); }
+.eyebrow {
+  margin: 0 0 14px; color: var(--green); font-size: 0.78rem; font-weight: 800;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 90px) clamp(18px, 5vw, 32px) clamp(40px, 6vw, 70px);
+}
+article h1 {
+  margin: 0 0 14px;
+  font-size: clamp(2.4rem, 6vw, 3.9rem);
+  line-height: 0.98;
+}
+.post-meta { margin: 0 0 38px; color: var(--muted); font-size: 0.95rem; }
+article h2 {
+  margin: 46px 0 12px;
+  font-size: 1.65rem;
+  line-height: 1.1;
+}
+article p { margin: 0 0 16px; font-size: 1.08rem; line-height: 1.62; }
+article li { font-size: 1.08rem; line-height: 1.62; margin-bottom: 6px; }
+article strong { font-weight: 750; }
+.pullquote,
+article blockquote {
+  margin: 26px 0;
+  padding: 18px 22px;
+  border-left: 6px solid var(--green);
+  border-radius: 7px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  font-size: 1.12rem;
+}
+article blockquote p { margin: 0; font-size: 1.12rem; }
+article a { text-decoration: underline; }
+pre {
+  overflow-x: auto;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--white);
+  font-size: 0.95rem;
+}
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.cta {
+  display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px;
+}
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 46px; padding: 12px 18px;
+  border: 1px solid var(--ink); border-radius: 7px; font-weight: 750;
+}
+.button.primary { color: var(--white); background: var(--ink); }
+.button.secondary { background: transparent; }
+footer {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+  padding: 26px clamp(18px, 4vw, 54px);
+  border-top: 1px solid rgba(23, 33, 27, 0.1);
+  color: var(--muted); font-size: 0.92rem;
+}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Bryson Systems home">
+        <span class="brand-mark">BS</span>
+        <span>Bryson Systems</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="/#work">Work</a>
+        <a href="/#videos">Videos</a>
+        <a href="/#process">Process</a>
+        <a href="/blog/" class="active">Blog</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <p class="eyebrow">Blog</p>
+        <h1>bio.md: an AI mirror of who you are on the inside</h1>
+        <p class="post-meta">Bryson · September 2026</p>
+
+        <!-- content:start -->
+<h2>Context</h2>
+<p>I've been using <a href="https://openclaw.ai/">OpenClaw</a> and <a href="https://hermes-agent.nousresearch.com/">Hermes Agent</a> a lot for the past few months. I've used it for many purposes: my personal research assistant, thinking partner for project/feature ideas, and running systems and routines in my personal life (reminder, fitness/nutrition &amp; sleep analysis, daily language learning segments). One of the biggest problems I've run into when using these assistant harnesses, and what led me to build this project, is <strong>memory</strong>. Not just remembering how to do certain tasks or what technologies I prefer to use when building a project... but a real memory of me as a person: what I like to do, who my friends are, how I react to certain situations/information, certain events in my life that shape my current reasoning. </p>
+<p>Wouldn't it be cool to have an assistant that knows all that? That can make more informed decisions, better insights and overall <em>feel</em> like a true personal assistant? I was curious to see if an AI assistant that had that level of knowledge about me, would be able to assist me more.</p>
+<p>The first approach was to write up a profile about me, my friends, family, hobbies, pet peeves etc. I quickly found the process too cumbersome and knew that there would be details about me that I would miss or get wrong, so I had to come up with something different.</p>
+<p>Then I realized, so much of our life is documented through so many sources: journals, photos, text messages, and more recently AI conversations. What if I could take all that and have AI make connections across those sources to build one coherent profile of me?</p>
+<p>I tried NotebookLM as I previously used it as a study tool to ingest information and turn it into quizzes and infographics. It failed miserably: large files were rejected, easily mixed up who said what in conversations, and answers degraded as the material grew.</p>
+<h2>bio.md</h2>
+<p>bio.md is a local web app that takes in any source; no file size limit, all converted to plain text, and stores it locally three ways:</p>
+<ol>
+<li><strong>Embeddings</strong> chunked with a hard-cap (900 characters) and separated by natural boundaries (blank line, new line, end of sentence, space) with a rolling-window of 150 characters to capture any phrases or ideas that may be cut-off.</li>
+<li><strong>Keyword Index</strong> keeping track of each unique word and which chunk includes it</li>
+<li><strong>Raw files</strong> which can be used to extract direct quotes for citations</li>
+</ol>
+<p>The web app is a simple three-pane interface with a chat, a place for imports, and the exported bio.md as well as a timeline view and open questions for gaps found in the sources. Using an agent, it synthesizes all these sources together to make a full and accurate profile of the user in the <code>bio.md</code> file.</p>
+<h3>How it works</h3>
+<p>The agent, called biographer, takes these imports as puzzle pieces, each shedding some light about who the user (you) is. Each puzzle piece is analyzed, compared against other puzzle pieces, and eventually placed into the <code>bio.md</code>. Chat conversations to a friend, journal entries, AI conversations... they all reveal something about you: how you think, what you like or dislike, who your friends are to you. </p>
+<p>When trying to fit these pieces together, sometimes there is missing information. Our entire life doesn't happen online (although most of it does these days) some things are said in-person, some things were just thoughts we kept to ourselves, and so if the biographer detects any of these gaps it asks specific, clarifying questions for you to fill in those gaps.</p>
+<h2>The unexpected, and sometimes scary, use case</h2>
+<p>Once I started to upload sources, the biographer started pointing out things about me that I didn't even know or realize about myself. </p>
+<p>Our view of ourselves can be biased by flawed memory, our ego and our emotions. When you upload a vast amount of information of yourself to a neutral AI and ask it to make connections and inferences across that information... it becomes sort of like a really clear mirror of who you are. There's no rationalization or justification of your actions, there are patterns in your speech and actions that you might not have realized that all come to light when you put it together and have it deeply analyzed. </p>
+<p>I was shocked when I read the patterns the biographer showed about me and it led me to a lot of deep self-reflection that honestly I don't think I could have achieved on my own. I would contradict myself a lot when talking to the same person, disguise emotionally-driven impulses as growth, and use internal anxieties &amp; vague online signals to substitute confrontation.</p>
+<p>We can tell ourselves lies to make us feel better, justify our actions to avoid accountability, or simply just ignore/avoid things that make us uncomfortable to think or talk about. By having this biographer bring all of it to light, it made me realize that this project could have more impact than simply having an AI know more about you. There could be real life use cases where someone could use this to synthesize their thoughts and emotions that were otherwise too complex or difficult to verbalize themselves. No AI could replace therapy, but I think this could be a possible tool where people can show others a deep and accurate "screenshot" of themselves that would otherwise be too overwhelming to create by themselves.</p>
+<h2>Technical Stuff</h2>
+<p>Moving from the philosophical side of this project, there are some processes and features I want to talk about which made <strong>bio.md</strong> work so well.</p>
+<h3>Ingestion</h3>
+<p>As mentioned before, all sources are converted to plain text, audio is transcribed, images are analyzed (codex only for now), and big files are split into chunks. </p>
+<p>During transcription, the app looks into <code>bio.md</code> and extract all the words that are capitalized, more than 3 letters long, and not in the exclude list of common words (The, His, From)... what's left is likely all the proper nouns like names and places that may have weird/unconventional spelling. These extracted words are then used to help the transcription with spelling.</p>
+<h3>Storage</h3>
+<p>Everything is stored locally in a single SQLite file. There are five tables:</p>
+<ol>
+<li>documents (these are the uploaded files converted to plain text, one row per file, contains stuff like upload datetime, size, path to the file, # of embedding chunks)</li>
+<li>chunks (a 900-character-max piece from a document with reference to the file it's from and its position</li>
+<li>chunks_fts (keyword index dictionary)</li>
+<li>vectors (one row per chunk, with the vector embedding stored as bytes, the app loads all of them into one matrix in RAM and that's what queries get multiplied with)</li>
+<li>meta (simply stores key value pair model: snowflake-arctic-embed-s)</li>
+</ol>
+<h3>Retrieval</h3>
+<p>The agent uses several tools to search your entire corpus. The only thing in its context is the <code>bio.md</code>, the last few messages in the chat, and the latest message/question you asked it. It uses the content in <code>bio.md</code> to first get an idea of what you are asking (the <code>bio.md</code> is basically a summary of your huge database). It uses that information to write a query that gets embedded and matched against the vectors, grep to find every mention of a keyword, and read_source to read the entire source file of a chunk. </p>
+<p>The query embedding using a hybrid search, first finding chunks most related to the query semantically as well as finding chunks containing the exact keywords in the query (keywords are filtered through an exclude list of common words). These two lists are then ranked together, using reciprocal rank fusion, and returns one final chunk list where chunks appearing in both lists are given more weight.</p>
+<p>Using these tools, it acts like a detective slowly uncovering a story, following new leads found in each tool call result that leads to another tool call until it's made all the connections it can to formulate an answer.</p>
+<p>No matter how big that database is, the detective's context doesn't get bloated and remains the same with 10 files as with 10,000.</p>
+<p>The whole "detective" loop is just the tool calls, returning the result and prompting the agent again. Once the agent returns plain text only the loop stops and the output is sent to chat.</p>
+<p>To save context and keep the agent sharp, every turn only keeps the system prompt, the current state of <code>bio.md</code>, the tail of the chat, and the current user message. Tools and reasoning are not included and are thrown away in the next turn, with the final findings saved to the <code>bio.md</code>. </p>
+<h4>Limits</h4>
+<p>Each turn has a budget to ensure it doesn't go too deep into any rabbit hole: 25 steps for chat, 40 for analysis, 60 for ingesting (more turns needed here since it ingests content of full raw files).</p>
+<p>Reports are guaranteed. If the step budget was hit, it is forced to generate a report with the information it has. If it outputs incorrect tool schema, the error is fed back for it to self-fix.</p>
+<p>Limits are adjustable but can increase usage.</p>
+<h3>bio.md (the file)</h3>
+<p>The first run creates a skeleton for the file which is just a template for basic information like summary, identity, timeline, people &amp; relationships, hypotheses, inferences (with confidence levels), open questions etc. </p>
+<p>The agent has one tool to edit the file: <code>edit_profile(old_text, new_text)</code>. If old_text is empty, it appends. If new_text is empty it removes old_text. old_text must match exactly what is in the file. Forcing surgical edits ensures that it doesn't accidentally rewrite/omit something by accident, compared to doing a full rewrite.</p>
+<p>One outstanding issue I noticed: since it requires these precise edits, it doesn't look at the summary as a whole so there can be redundant information in multiple places and the summary isn't as coherent to read. Currently, I am thinking of doing a periodic (or manually activated) full pass that consolidates the whole file.</p>
+<h2>Costs and privacy</h2>
+<p>Everything runs locally except the model calls. You bring an <a href="https://openrouter.ai/keys">OpenRouter</a> key (any GPT, Claude, Gemini or open model, pay per use) or the OpenAI Codex CLI on a ChatGPT subscription. A researched reply costs tens of cents. Ingesting and processing the entire material might cost a few dollars. Your material, the index, the profile and the key stay on your machine; the model only sees the profile, recent messages, and the excerpts the agent pulls while researching.</p>
+<h2>Try it</h2>
+<pre><code>git clone https://github.com/leekycauldron/bio.md &amp;&amp; cd bio.md
+./setup.sh &amp;&amp; ./run.sh     # Windows: .\setup.ps1 then .\run.ps1
+</code></pre>
+<p>There are instructions in the README as well as in the app on how to export iMessages and Instagram DMs. iMessage export on windows was a bit of a pain, if enough people seem to run into this issue I'll put a video tutorial.</p>
+<p>Drop in your files, watch it read, and see what it says about you.</p>
+<p>If you like it or have critique/suggestions, let me know: <a href="mailto:bryson@brysonsystems.ca">bryson@brysonsystems.ca</a></p>
+
+        <!-- content:end -->
+        <div class="cta">
+          <a class="button primary" href="https://github.com/leekycauldron/bio.md">bio.md on GitHub</a>
+          <a class="button secondary" href="mailto:bryson@brysonsystems.ca">Email Bryson</a>
+        </div>
+      </article>
+    </main>
+
+    <footer>
+      <span>Bryson Systems</span>
+      <span>AI workflow systems for content, marketing, and operations.</span>
+    </footer>
+  </body>
+</html>

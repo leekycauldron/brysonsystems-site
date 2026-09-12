@@ -4,10 +4,5 @@
   "description": "I built bio.md, an agent that reads your exported history and maintains an evidence-based profile of you. Here's why, and what I found in mine.",
   "author": "Bryson",
   "date": "2026-09-01",
-  "category": "technical",
-  "tags": [
-    "AI",
-    "agents",
-    "local-first"
-  ]
+  "category": "technical"
 }

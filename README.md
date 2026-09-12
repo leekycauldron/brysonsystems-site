@@ -12,7 +12,7 @@ Netlify builds from this repo on every push to `main`. There is no build command
 
 ## Private blog editor
 
-`editor/` is a local Node.js Markdown editor with side-by-side preview. It supports article types (Technical, Essay, Personal, and Note) plus topic tags. It scans `blog/*/post.md`, writes metadata and rendered HTML, rebuilds the filterable blog index, then commits and pushes each save/delete to `main` so Netlify deploys it.
+`editor/` is a local Node.js Markdown editor with side-by-side preview. It separates posts into Technical and Personal writing. It scans `blog/*/post.md`, writes metadata and rendered HTML, rebuilds the filterable blog index, then commits and pushes each save/delete to `main` so Netlify deploys it.
 
 ```bash
 cd editor

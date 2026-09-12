@@ -27,16 +27,15 @@ test('creates, edits, deletes, commits, and pushes a post', async (t) => {
 
   process.env.BLOG_REPO_DIR = repo;
   const store = await import(`./blog-store.mjs?integration=${Date.now()}`);
-  const post = { slug: 'test-post', title: 'Test post', description: 'A test post.', author: 'Bryson', date: '2026-09-12', category: 'personal', tags: ['reflection', 'life'], markdown: '## Hello\n\nFirst version.' };
+  const post = { slug: 'test-post', title: 'Test post', description: 'A test post.', author: 'Bryson', date: '2026-09-12', category: 'personal', markdown: '## Hello\n\nFirst version.' };
   const created = await store.savePost(post);
   assert.equal(created.changed, true);
   const saved = await store.getPost('test-post');
   assert.equal(saved.title, 'Test post');
   assert.equal(saved.category, 'personal');
-  assert.deepEqual(saved.tags, ['reflection', 'life']);
   const index = await fs.readFile(path.join(repo, 'blog/index.html'), 'utf8');
   assert.match(index, /data-category="personal"/);
-  assert.match(index, /data-tag="reflection"/);
+  assert.doesNotMatch(index, /data-tag=/);
 
   post.markdown = '## Hello\n\nSecond version.';
   const edited = await store.savePost(post, 'test-post');

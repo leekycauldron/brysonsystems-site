@@ -1,5 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
-const fields = ['title', 'slug', 'date', 'author', 'description', 'markdown'];
+const fields = ['title', 'slug', 'date', 'author', 'category', 'tags', 'description', 'markdown'];
 let posts = [], originalSlug = '', dirty = false, previewTimer;
 
 function apiPath(path = '') {
@@ -21,7 +21,7 @@ function setBusy(busy, label = '') {
 }
 function values() { return Object.fromEntries(fields.map((id) => [id, $(`#${id}`).value])); }
 function setValues(post) {
-  for (const id of fields) $(`#${id}`).value = post[id] || '';
+  for (const id of fields) $(`#${id}`).value = id === 'tags' && Array.isArray(post.tags) ? post.tags.join(', ') : post[id] || '';
   originalSlug = post.slug || ''; $('#slug').disabled = Boolean(originalSlug); dirty = false; setBusy(false); renderPreview(); renderList();
 }
 function escapeHtml(value) { const span = document.createElement('span'); span.textContent = value || ''; return span.innerHTML; }
@@ -39,7 +39,7 @@ async function openPost(slug, force = false) {
 }
 function newPost() {
   if (dirty && !confirm('Discard your unsaved changes?')) return;
-  setValues({ date: new Date().toISOString().slice(0, 10), author: 'Bryson', markdown: '## Start writing\n\n' });
+  setValues({ date: new Date().toISOString().slice(0, 10), author: 'Bryson', category: 'essay', markdown: '## Start writing\n\n' });
   dirty = false; setBusy(false, 'New draft');
 }
 function renderPreview() {

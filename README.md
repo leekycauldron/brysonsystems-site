@@ -9,3 +9,15 @@ The Bryson Systems website. A static site (plain HTML, no build step), deployed 
 
 ## Deploy
 Netlify builds from this repo on every push to `main`. There is no build command; the publish directory is the repo root (see `netlify.toml`). To publish a change: commit and push.
+
+## Private blog editor
+
+`editor/` is a local Node.js Markdown editor with side-by-side preview. It scans `blog/*/post.md`, writes metadata and rendered HTML, rebuilds the blog index, then commits and pushes each save/delete to `main` so Netlify deploys it.
+
+```bash
+cd editor
+npm install
+npm start
+```
+
+The production instance binds to localhost and is exposed only to the tailnet with Tailscale Serve. The editor files are blocked on the public Netlify site by `netlify.toml`.

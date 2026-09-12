@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Blog Editor · Bryson Systems</title><link rel="stylesheet" href="/blog-editor/styles.css"></head>
+<body>
+  <header><div><span class="mark">BS</span><strong>Blog Editor</strong><span class="private">TAILNET ONLY</span></div><div class="actions"><span id="saveState">Ready</span><button id="deleteButton" class="danger" disabled>Delete</button><button id="saveButton" class="primary">Save & publish</button></div></header>
+  <main>
+    <aside><button id="newButton" class="new">＋ New post</button><div id="postList" class="post-list" aria-label="Blog posts"></div></aside>
+    <section class="workspace">
+      <div class="metadata">
+        <label class="wide">Title<input id="title" autocomplete="off" placeholder="Post title"></label>
+        <label>Slug<input id="slug" autocomplete="off" placeholder="post-slug"></label>
+        <label>Date<input id="date" type="date"></label>
+        <label>Author<input id="author" autocomplete="off" value="Bryson"></label>
+        <label class="wide">Description<input id="description" autocomplete="off" placeholder="One-sentence summary for the blog index and search results"></label>
+      </div>
+      <div class="panes"><div class="pane editor-pane"><div class="pane-title">MARKDOWN</div><textarea id="markdown" spellcheck="true" placeholder="## Start writing…"></textarea></div><div class="pane preview-pane"><div class="pane-title">PREVIEW</div><article id="preview"></article></div></div>
+    </section>
+  </main>
+  <div id="toast" role="status"></div>
+  <dialog id="confirmDialog"><form method="dialog"><h2>Delete this post?</h2><p>This publishes a Git commit removing the post. Git history can recover it.</p><div><button value="cancel">Cancel</button><button value="confirm" class="danger">Delete & publish</button></div></form></dialog>
+  <script src="/blog-editor/app.js" type="module"></script>
+</body></html>

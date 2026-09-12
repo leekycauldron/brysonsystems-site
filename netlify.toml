@@ -2,3 +2,10 @@
 # Plain HTML, no build step — Netlify just publishes the repo root.
 [build]
   publish = "."
+
+# The editor runs locally behind Tailscale Serve; never expose its UI from Netlify.
+[[redirects]]
+  from = "/editor/*"
+  to = "/404.html"
+  status = 404
+  force = true

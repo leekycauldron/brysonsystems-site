@@ -1,4 +1,5 @@
 # OS / editor cruft
+editor/node_modules/
 .DS_Store
 Thumbs.db
 desktop.ini

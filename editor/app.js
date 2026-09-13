@@ -46,8 +46,12 @@ function renderPreview() {
   clearTimeout(previewTimer);
   previewTimer = setTimeout(async () => {
     try {
+      const preview = $('#preview');
+      const maxScroll = preview.scrollHeight - preview.clientHeight;
+      const scrollRatio = maxScroll > 0 ? preview.scrollTop / maxScroll : 0;
       const { html } = await api('/preview', { method: 'POST', body: JSON.stringify({ markdown: $('#markdown').value }) });
-      $('#preview').innerHTML = `<h1>${escapeHtml($('#title').value || 'Untitled')}</h1>${html}`;
+      preview.innerHTML = `<h1>${escapeHtml($('#title').value || 'Untitled')}</h1>${html}`;
+      requestAnimationFrame(() => { preview.scrollTop = scrollRatio * Math.max(0, preview.scrollHeight - preview.clientHeight); });
     } catch (error) { $('#preview').textContent = error.message; }
   }, 120);
 }
@@ -70,6 +74,13 @@ async function remove() {
 $('#postList').addEventListener('click', (event) => { const button = event.target.closest('[data-slug]'); if (button) openPost(button.dataset.slug); });
 $('#newButton').addEventListener('click', newPost); $('#saveButton').addEventListener('click', save);
 $('#deleteButton').addEventListener('click', () => $('#confirmDialog').showModal());
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-scroll-top]');
+  if (!button) return;
+  const target = $(`#${button.dataset.scrollTop}`);
+  target.scrollTo({ top: 0, behavior: 'smooth' });
+  if (target.matches('textarea')) target.focus({ preventScroll: true });
+});
 $('#confirmDialog').addEventListener('close', () => { if ($('#confirmDialog').returnValue === 'confirm') remove(); });
 for (const id of fields) $(`#${id}`).addEventListener('input', () => { dirty = true; setBusy(false); renderPreview(); });
 $('#title').addEventListener('input', () => { if (!originalSlug) $('#slug').value = $('#title').value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); });

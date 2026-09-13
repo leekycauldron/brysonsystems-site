@@ -86,5 +86,5 @@ try {
   const exited = once(chrome, 'exit');
   chrome.kill('SIGTERM');
   await exited;
-  await fs.rm(profile, { recursive: true, force: true });
+  await fs.rm(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 }

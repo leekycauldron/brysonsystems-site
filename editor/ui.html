@@ -2,7 +2,7 @@
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Blog Editor · Bryson Systems</title><link rel="stylesheet" href="/blog-editor/styles.css"></head>
 <body>
-  <header><div><span class="mark">BS</span><strong>Blog Editor</strong><span class="private">TAILNET ONLY</span></div><div class="actions"><span id="saveState">Ready</span><button id="deleteButton" class="danger" disabled>Delete</button><button id="saveButton" class="primary">Save & publish</button></div></header>
+  <header><div><span class="mark">BS</span><strong>Blog Editor</strong><span class="private">TAILNET ONLY</span></div><div class="actions"><span id="saveState">Ready</span><button id="deleteButton" class="danger" disabled>Delete</button><button id="draftButton">Save draft</button><button id="saveButton" class="primary">Publish</button></div></header>
   <main>
     <aside><button id="newButton" class="new">＋ New post</button><div id="postList" class="post-list" aria-label="Blog posts"></div></aside>
     <section class="workspace">
@@ -18,6 +18,6 @@
     </section>
   </main>
   <div id="toast" role="status"></div>
-  <dialog id="confirmDialog"><form method="dialog"><h2>Delete this post?</h2><p>This publishes a Git commit removing the post. Git history can recover it.</p><div><button value="cancel">Cancel</button><button value="confirm" class="danger">Delete & publish</button></div></form></dialog>
+  <dialog id="confirmDialog"><form method="dialog"><h2 id="confirmTitle">Delete this post?</h2><p id="confirmCopy">This publishes a Git commit removing the post. Git history can recover it.</p><div><button value="cancel">Cancel</button><button id="confirmDelete" value="confirm" class="danger">Delete & publish</button></div></form></dialog>
   <script src="/blog-editor/app.js" type="module"></script>
 </body></html>

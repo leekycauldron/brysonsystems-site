@@ -10,6 +10,7 @@ const exec = promisify(execFile);
 const EDITOR_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_DIR = process.env.BLOG_REPO_DIR ? path.resolve(process.env.BLOG_REPO_DIR) : path.resolve(EDITOR_DIR, '..');
 const BLOG_DIR = path.join(REPO_DIR, 'blog');
+const DRAFT_DIR = path.join(REPO_DIR, '.git', 'blog-editor-drafts');
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CATEGORIES = new Set(['technical', 'personal']);
 const CATEGORY_LABELS = { technical: 'Technical', personal: 'Personal' };
@@ -34,13 +35,17 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
-function validatePost(post) {
+function cleanPost(post) {
   const category = String(post.category || 'technical').trim().toLowerCase();
-  const clean = {
+  return {
     slug: String(post.slug || '').trim().toLowerCase(), title: String(post.title || '').trim(),
     description: String(post.description || '').trim(), author: String(post.author || 'Bryson').trim(),
     date: String(post.date || '').trim(), category, markdown: String(post.markdown || '')
   };
+}
+
+function validatePost(post) {
+  const clean = cleanPost(post);
   if (!SLUG_RE.test(clean.slug)) throw new Error('Slug must contain lowercase letters, numbers, and single hyphens only.');
   if (!clean.title) throw new Error('Title is required.');
   if (!clean.description) throw new Error('Description is required.');
@@ -48,6 +53,59 @@ function validatePost(post) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(clean.date) || Number.isNaN(Date.parse(`${clean.date}T00:00:00Z`))) throw new Error('Date must be a valid YYYY-MM-DD date.');
   if (!clean.markdown.trim()) throw new Error('Markdown body is required.');
   return clean;
+}
+
+function validateSlug(slug) {
+  const clean = String(slug || '').trim().toLowerCase();
+  if (!SLUG_RE.test(clean)) throw new Error('Invalid slug.');
+  return clean;
+}
+
+function draftPath(slug) {
+  return path.join(DRAFT_DIR, `${validateSlug(slug)}.json`);
+}
+
+export async function listDrafts() {
+  await fs.mkdir(DRAFT_DIR, { recursive: true, mode: 0o700 });
+  const entries = await fs.readdir(DRAFT_DIR, { withFileTypes: true });
+  const drafts = [];
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith('.json')) continue;
+    try {
+      const draft = JSON.parse(await fs.readFile(path.join(DRAFT_DIR, entry.name), 'utf8'));
+      const post = cleanPost(draft);
+      drafts.push({ ...post, id: validateSlug(draft.id || entry.name.slice(0, -5)), markdown: undefined, updatedAt: draft.updatedAt || '' });
+    } catch {
+      // Keep one damaged local file from preventing access to other drafts.
+    }
+  }
+  return drafts.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || a.title.localeCompare(b.title));
+}
+
+export async function getDraft(slug) {
+  const draft = JSON.parse(await fs.readFile(draftPath(slug), 'utf8'));
+  return { ...cleanPost(draft), id: validateSlug(draft.id || slug), updatedAt: draft.updatedAt || '' };
+}
+
+export async function saveDraft(input, previousId = '') {
+  const post = cleanPost(input);
+  if (!CATEGORIES.has(post.category)) throw new Error('Type must be Technical or Personal.');
+  let id = previousId ? validateSlug(previousId) : (SLUG_RE.test(post.slug) ? post.slug : `draft-${Date.now()}`);
+  await fs.mkdir(DRAFT_DIR, { recursive: true, mode: 0o700 });
+  if (!previousId) {
+    while (await fs.access(draftPath(id)).then(() => true).catch(() => false)) id = `${id}-${Date.now()}`;
+  }
+  const draft = { ...post, id, updatedAt: new Date().toISOString() };
+  const target = draftPath(id);
+  const temporary = `${target}.${process.pid}.${Date.now()}.tmp`;
+  await fs.writeFile(temporary, `${JSON.stringify(draft, null, 2)}\n`, { mode: 0o600 });
+  await fs.rename(temporary, target);
+  return { draft, message: 'Draft saved privately. Nothing was published.' };
+}
+
+export async function deleteDraft(slug) {
+  await fs.unlink(draftPath(slug));
+  return { message: 'Private draft discarded.' };
 }
 
 function formatMonth(date) {

@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { deletePost, getPost, listPosts, renderMarkdown, savePost } from './blog-store.mjs';
+import { deleteDraft, deletePost, getDraft, getPost, listDrafts, listPosts, renderMarkdown, saveDraft, savePost } from './blog-store.mjs';
 
 const PORT = Number(process.env.PORT || 4173);
 const HOST = process.env.HOST || '127.0.0.1';
@@ -52,15 +52,24 @@ const server = createServer(async (req, res) => {
     }
     if (req.method === 'GET' && pathname === '/api/posts') return json(res, 200, { posts: await listPosts() });
     if (req.method === 'GET' && pathname.startsWith('/api/posts/')) return json(res, 200, await getPost(decodeURIComponent(pathname.slice('/api/posts/'.length))));
+    if (req.method === 'GET' && pathname === '/api/drafts') return json(res, 200, { drafts: await listDrafts() });
+    if (req.method === 'GET' && pathname.startsWith('/api/drafts/')) return json(res, 200, await getDraft(decodeURIComponent(pathname.slice('/api/drafts/'.length))));
     if (req.method === 'POST' && pathname === '/api/preview') {
       const input = await body(req);
       return json(res, 200, { html: renderMarkdown(input.markdown) });
     }
     if (req.method === 'POST' && pathname === '/api/posts') {
       const input = await body(req);
-      return json(res, 200, await savePost(input.post, input.originalSlug || ''));
+      const result = await savePost(input.post, input.originalSlug || '');
+      if (input.draftId) await deleteDraft(input.draftId).catch((error) => { if (error.code !== 'ENOENT') throw error; });
+      return json(res, 200, result);
+    }
+    if (req.method === 'POST' && pathname === '/api/drafts') {
+      const input = await body(req);
+      return json(res, 200, await saveDraft(input.post, input.draftId || ''));
     }
     if (req.method === 'DELETE' && pathname.startsWith('/api/posts/')) return json(res, 200, await deletePost(decodeURIComponent(pathname.slice('/api/posts/'.length))));
+    if (req.method === 'DELETE' && pathname.startsWith('/api/drafts/')) return json(res, 200, await deleteDraft(decodeURIComponent(pathname.slice('/api/drafts/'.length))));
     json(res, 404, { error: 'Not found.' });
   } catch (error) {
     console.error(error);
